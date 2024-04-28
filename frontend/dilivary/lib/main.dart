@@ -1,3 +1,6 @@
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
+
+import 'package:dilivary/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:dilivary/Login.dart';
 import 'package:dilivary/Signup.dart';
@@ -5,7 +8,7 @@ import 'package:dilivary/Signup.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: MAIN(),
+    home: HomePage(),
   ));
 }
 
@@ -21,8 +24,7 @@ class MAIN extends StatelessWidget {
             
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-            decoration: BoxDecoration(
-              
+            decoration: BoxDecoration( 
               image: DecorationImage(
                 image: AssetImage("assets/Vector.jpg"),
                 fit: BoxFit.cover,

@@ -1,8 +1,10 @@
+// ignore_for_file: unused_field, prefer_const_constructors, prefer_const_literals_to_create_immutables, file_names, library_private_types_in_public_api, camel_case_types
+
 import 'package:dilivary/Signup.dart';
 import 'package:flutter/material.dart';
 
 class SignupV extends StatefulWidget {
-  const SignupV({Key? key}) : super(key: key);
+  const SignupV({super.key});
 
   @override
   _SignupVState createState() => _SignupVState();
@@ -220,12 +222,12 @@ class inputFile extends StatelessWidget {
   final List<DropdownMenuItem<String>>? items;
 
   const inputFile({
-    Key? key,
+    super.key,
     required this.label,
     required this.hint,
     this.onChanged,
     this.items,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
