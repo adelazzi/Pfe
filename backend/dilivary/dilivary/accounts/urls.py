@@ -7,4 +7,6 @@ urlpatterns = [
     path('logout/', user_logout, name='logout'),
     path('update/', user_update, name='update'),
     path('remove/', user_remove, name='remove'),
+    path('users/', get_all_users, name='get_all_users'),
+
 ]

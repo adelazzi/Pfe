@@ -95,3 +95,19 @@ def user_logout(request):
             return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+    
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import CustomUser
+from .serializers import UserSerializer
+
+@api_view(['GET'])
+def get_all_users(request):
+    """
+    Retrieve all users.
+    """
+    users = CustomUser.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
