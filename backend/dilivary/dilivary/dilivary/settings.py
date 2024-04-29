@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'rest_framework',
     'knox',
+    'vehicule',
     'accounts',
     'rest_framework.authtoken',
     'django.contrib.admin',

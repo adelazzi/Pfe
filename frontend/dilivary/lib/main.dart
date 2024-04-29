@@ -1,6 +1,3 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
-
-import 'package:dilivary/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:dilivary/Login.dart';
 import 'package:dilivary/Signup.dart';
@@ -8,7 +5,7 @@ import 'package:dilivary/Signup.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: HomePage(),
+    home: MAIN(),
   ));
 }
 
@@ -16,22 +13,18 @@ class MAIN extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: SafeArea(
         child: SingleChildScrollView(
-          
           child: Container(
-            
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-            decoration: BoxDecoration( 
+            decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/Vector.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
             child: Column(
-              
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
@@ -58,7 +51,8 @@ class MAIN extends StatelessWidget {
                   minWidth: double.infinity,
                   height: 60,
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                   shape: RoundedRectangleBorder(
                     side: BorderSide(color: Colors.black),
@@ -77,7 +71,8 @@ class MAIN extends StatelessWidget {
                 ),
                 MaterialButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SignupPage()));
                   },
                   minWidth: double.infinity,
                   height: 60,

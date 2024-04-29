@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomeDeliveryPage extends StatefulWidget {
+  const HomeDeliveryPage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeDeliveryPageState createState() => _HomeDeliveryPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
@@ -113,10 +113,10 @@ class MapScreen extends StatelessWidget {
         ),
         children: [
           TileLayer(
-            
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c'],
-            
+
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c'],
+
           ),
         ],
       ),

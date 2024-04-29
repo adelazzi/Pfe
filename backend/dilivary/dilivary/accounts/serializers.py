@@ -4,7 +4,7 @@ from .models import CustomUser
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password', 'age', 'phone_number', 'id_number']
+        fields = ['username', 'email', 'password', 'age', 'phone_number', 'id_number','id_driving_license']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -14,7 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             age=validated_data.get('age'),
             phone_number=validated_data.get('phone_number'),
-            id_number=validated_data.get('id_number')
+            id_number=validated_data.get('id_number'),
+            id_driving_license = validated_data.get('id_driving_license'),
         )
         return user
 
@@ -24,7 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
         instance.age = validated_data.get('age', instance.age)
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.id_number = validated_data.get('id_number', instance.id_number)
-        
+        instance.id_driving_license = validated_data.get('id_driving_license', instance.id_driving_license)
+       
         # Check if password is provided and update it
         password = validated_data.get('password')
         if password:
