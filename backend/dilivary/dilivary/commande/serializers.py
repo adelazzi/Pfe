@@ -28,3 +28,12 @@ class CommandsSerializer(serializers.ModelSerializer):
         model = Command
         fields = ['id', 'iddriver', 'fromlat', 'fromlon', 'tolat', 'tolon', 'size', 'weight', 'completed']
     
+    
+    
+
+
+class CommandlocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Command
+        fields = ['fromlat', 'fromlon', 'tolat', 'tolon']
+   

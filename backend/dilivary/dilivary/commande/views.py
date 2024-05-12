@@ -80,3 +80,16 @@ def complete_command(request, pk):
     command.save()
 
     return Response( "Completed",status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_location(request, pk):
+    """
+    Retrieve a specific command.
+    """
+    try:
+        command = Command.objects.get(pk=pk)
+    except Command.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CommandlocationSerializer(command)
+    return Response(serializer.data)
