@@ -16,6 +16,7 @@ dependencies:
   latlong2: ^0.9.1
   google_maps_flutter: ^2.2.0
   meta: any  # Add meta package here with the version required by leak_tracker_testing
+  flutter_inappwebview: ^6.0.0
 
 dev_dependencies:
   flutter_test:
