@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'commande',
+    'message',
     'rest_framework',
     'knox',
     'location',

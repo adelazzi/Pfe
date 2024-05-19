@@ -22,5 +22,6 @@ urlpatterns = [
     path('api/', include('accounts.urls')),  # Include the app's URLs
     path('vehicule/', include('vehicule.urls')),  # Include the app's URLs
     path('location/', include('location.urls')),  # Include the app's URLs
-    path('command/',include('commande.urls'))
+    path('command/',include('commande.urls')),
+    path('message/',include('message.urls')),
 ]

@@ -39,3 +39,5 @@ class UserSerializer(serializers.ModelSerializer):
 
     def remove(self, instance):
         instance.delete()
+
+

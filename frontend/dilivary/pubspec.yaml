@@ -17,6 +17,8 @@ dependencies:
   google_maps_flutter: ^2.2.0
   meta: any  # Add meta package here with the version required by leak_tracker_testing
   flutter_inappwebview: ^6.0.0
+  shared_preferences: ^2.2.3
+  flutter_cache_manager: ^3.3.2
 
 dev_dependencies:
   flutter_test:
