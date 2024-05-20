@@ -1,4 +1,4 @@
-import 'package:dilivary/Signup.dart';
+import 'package:dilivary/Root/Signup.dart';
 import 'package:flutter/material.dart';
 import 'package:dilivary/HomeD.dart';
 

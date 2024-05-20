@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:dilivary/Login.dart';
+import 'package:dilivary/Root/Login.dart';
 // Import the main page
-import 'package:dilivary/Home.dart'; // Import the HomePage page
-import 'package:dilivary/Signup02.dart';
+import 'package:dilivary/Root/Signup02.dart';
+
+import 'Client/homa_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);

@@ -5,4 +5,4 @@ from .models import UserLocation
 class UserLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserLocation
-        fields = ['ids', 'latitude', 'longitude', 'timestamp']
+        fields = ['ids', 'latitude', 'longitude','geolocation', 'timestamp']

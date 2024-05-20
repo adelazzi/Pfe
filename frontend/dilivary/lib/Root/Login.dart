@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:dilivary/main.dart';
-import 'package:dilivary/Signup.dart';
-import 'package:dilivary/Home.dart';
+import 'package:dilivary/Root/Signup.dart';
+import 'package:dilivary/Root/Client/homa_page.dart';
 import 'package:dilivary/Home_Admin.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
-class LoginPage extends StatelessWidget {
-  String NameAdmin = "Administrateur@app.pfe";
-  String PwdAdmin = "Password123";
+import '../tools/socialmedia.dart';
+import '../tools/underline.dart';
+
+class LoginPage extends StatefulWidget {
+
+  LoginPage({Key? key}) : super(key: key);
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  var NameAdmin = "Administrateur@app.pfe";
+  var PwdAdmin = "Password123";
+
+  String enteredEmail = "";
+  String enteredPassword = "";
+
+
 
   @override
   Widget build(BuildContext context) {
-    String enteredEmail = ""; // Variable to store entered email
-    String enteredPassword = ""; // Variable to store entered password
 
     return Scaffold(
+      appBar: AppBar(),
       resizeToAvoidBottomInset: false,
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -25,18 +39,12 @@ class LoginPage extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(horizontal: 30),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => MAIN()));
-                },
-                icon: Icon(Icons.arrow_back_ios),
-              ),
+
               Text(
                 "Login",
                 style: TextStyle(
@@ -45,9 +53,6 @@ class LoginPage extends StatelessWidget {
                   color: Colors.black,
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
               Text(
                 "Login to your account",
                 style: TextStyle(
@@ -55,9 +60,6 @@ class LoginPage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
                 ),
-              ),
-              SizedBox(
-                height: 30,
               ),
               // Email input field
               TextField(
@@ -68,9 +70,6 @@ class LoginPage extends StatelessWidget {
                   labelText: "Email",
                   border: OutlineInputBorder(),
                 ),
-              ),
-              SizedBox(
-                height: 20,
               ),
               // Password input field
               TextField(
@@ -83,31 +82,8 @@ class LoginPage extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
               // Verification function buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Implement email verification function
-                    },
-                    child: Text("Verify Email"),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Implement password verification function
-                    },
-                    child: Text("Verify Password"),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
+
               // Login button
               Container(
                 decoration: BoxDecoration(
@@ -145,53 +121,18 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              // Sign up button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "Don't have an account?",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SignupPage()));
-                    },
-                    child: Text(
-                      "Sign up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.deepOrangeAccent,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
+
+              or_(),
               // Google login button
-              SignInButton(
-                Buttons.Google,
-                onPressed: () {
-                  // Implement Google login functionality with verification
-                  // After verification, navigate to HomePage
-                },
-                text: "Login with Google",
-              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SocialMedia(img: "assets/icons/google.svg",),
+                  SocialMedia(img: "assets/icons/facebook.svg",),
+                  SocialMedia(img: "assets/icons/whatsapp.svg",),
+                ],
+              )
             ],
           ),
         ),
