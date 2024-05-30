@@ -56,18 +56,29 @@ def user_login(request):
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def user_update(request):
     """
     Update user information.
     """
-    if request.method == 'POST':
-        user = request.user
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    user = request.user
+    if not user.is_authenticated:
+        return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    serializer = UserSerializer(user, data=request.data, partial=True)  # Allow partial updates
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 @api_view(['POST'])
 def user_remove(request):
@@ -115,3 +126,18 @@ def get_all_users(request):
     users = CustomUser.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+
+
+
+@api_view(['GET'])
+def get_users(request,id):
+    """
+    Retrieve all users.
+    """
+    users = CustomUser.objects.get(id =id)
+    serializer = UserSerializer(users)
+    return Response(serializer.data)
+
+
+

@@ -4,12 +4,14 @@ import 'package:dilivary/Root/Signup.dart';
 import 'package:dilivary/Root/Client/homa_page.dart';
 import 'package:dilivary/Home_Admin.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Models/User.dart';
 import '../tools/socialmedia.dart';
 import '../tools/underline.dart';
 
 class LoginPage extends StatefulWidget {
-
   LoginPage({Key? key}) : super(key: key);
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -22,11 +24,25 @@ class _LoginPageState extends State<LoginPage> {
   String enteredEmail = "";
   String enteredPassword = "";
 
+  Future<void> _login() async {
+    final mainuser = await User.login(enteredEmail, enteredPassword);
 
+    if (mainuser != null) {
+      await mainuser.saveToPreferences();
+      print(
+          'Login successful: ${mainuser.token}, ${mainuser.userType}, ${mainuser.id},${mainuser.phone_number} , ${mainuser.id_driving_license}');
+
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => HomePage_C()),
+      );
+    } else {
+      print('Login failed');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(),
       resizeToAvoidBottomInset: false,
@@ -44,7 +60,6 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-
               Text(
                 "Login",
                 style: TextStyle(
@@ -91,19 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                   border: Border.all(color: Colors.black),
                 ),
                 child: MaterialButton(
-                  onPressed: () {
-                    // Check if entered email and password match admin credentials
-                    if (enteredEmail == NameAdmin &&
-                        enteredPassword == PwdAdmin) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeAdminPage()));
-                    } else {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
-                    }
-                  },
+                  onPressed: _login,
                   minWidth: double.infinity,
                   height: 60,
                   color: Colors.deepOrangeAccent,
@@ -128,9 +131,15 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SocialMedia(img: "assets/icons/google.svg",),
-                  SocialMedia(img: "assets/icons/facebook.svg",),
-                  SocialMedia(img: "assets/icons/whatsapp.svg",),
+                  SocialMedia(
+                    img: "assets/icons/google.svg",
+                  ),
+                  SocialMedia(
+                    img: "assets/icons/facebook.svg",
+                  ),
+                  SocialMedia(
+                    img: "assets/icons/whatsapp.svg",
+                  ),
                 ],
               )
             ],

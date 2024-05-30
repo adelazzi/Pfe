@@ -1,8 +1,11 @@
+// ignore_for_file: sort_child_properties_last, prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:dilivary/Root/Login.dart';
-// Import the main page
 import 'package:dilivary/Root/Signup02.dart';
-
 import 'Client/homa_page.dart';
 
 class SignupPage extends StatefulWidget {
@@ -13,8 +16,101 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  bool isDeliveryPerson =
-      false; // State variable to track if the user is a delivery person
+  final _formKey = GlobalKey<FormState>();
+  bool isDeliveryPerson = false;
+
+  // Create TextEditingControllers for the form fields
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _ageController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _idlicenseController = TextEditingController();
+  final _idnumberController = TextEditingController();
+
+  Future<void> signup() async {
+    // Validate the form
+    if (_formKey.currentState?.validate() ?? false) {
+      // Check if passwords match
+      if (_passwordController.text == _confirmPasswordController.text) {
+        final data = {
+          'username': _fullNameController.text,
+          'email': _emailController.text,
+          'phone_number': _phoneNumberController.text,
+          'age': _ageController.text,
+          'password': _passwordController.text,
+          'id_driving_license': isDeliveryPerson ? int.tryParse(_idlicenseController.text) : null,
+          'id_number': _idnumberController.text,
+          'user_type': isDeliveryPerson ? 'Driver' : 'Client',
+        };
+
+        // Make the API call
+        final response = await http.post(
+          Uri.parse(
+              'http://127.0.0.1:8000/api/register/'), // Replace with your API endpoint
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: json.encode(data),
+        );
+
+        // Handle the response
+        if (response.statusCode == 201) {
+          if (isDeliveryPerson) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SignupV()),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage_C()),
+            );
+          }
+        } else {
+          // Handle error
+          final errorResponse = json.decode(response.body);
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Error'),
+                content: Text(errorResponse.toString() ?? 'An error occurred'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } else {
+        // Show an error message if passwords do not match
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Passwords do not match'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,150 +121,145 @@ class _SignupPageState extends State<SignupPage> {
           height: MediaQuery.of(context).size.height,
           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Text(
-                      "Sign up",
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 17,
-                    ),
-                    Text(
-                      "Create an account, it's free",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Text(
+                        "Sign up",
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    Text(
-                      "Let's start with your information ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
+                      SizedBox(height: 17),
+                      Text(
+                        "Create an account, it's free",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
                       ),
-                    )
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    inputFile(
-                      label: "Full Name",
-                      hint: "Enter your full name",
-                    ),
-                    inputFile(
-                      label: "Email",
-                      hint: "Enter your email",
-                    ),
-                    inputFile(
-                      label: "Phone Number",
-                      hint: "Enter your phone number",
-                    ),
-                    inputFile(
-                      label: "Age",
-                      hint: "Enter your age",
-                    ),
-                    inputFile(
-                      label: "Password",
-                      hint: "Enter your password",
-                      obscureText: true, // Password field should be obscured
-                    ),
-                    inputFile(
-                      label: "Confirm Password",
-                      hint: "Confirm your password",
-                      obscureText:
-                          true, // Confirm password field should be obscured
-                    ),
-                    // Show additional fields if the user is a delivery person
-                    if (isDeliveryPerson)
-                      Column(
+                      Text(
+                        "Let's start with your information ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: <Widget>[
+                      inputFile(
+                        label: "Full Name",
+                        hint: "Enter your full name",
+                        controller: _fullNameController,
+                      ),
+                      inputFile(
+                        label: "Id number",
+                        hint: "Enter your Id number",
+                        controller: _idnumberController,
+                      ),
+                      inputFile(
+                        label: "Email",
+                        hint: "Enter your email",
+                        controller: _emailController,
+                      ),
+                      inputFile(
+                        label: "Phone Number",
+                        hint: "Enter your phone number",
+                        controller: _phoneNumberController,
+                      ),
+                      inputFile(
+                        label: "Age",
+                        hint: "Enter your age",
+                        controller: _ageController,
+                      ),
+                      inputFile(
+                        label: "Password",
+                        hint: "Enter your password",
+                        controller: _passwordController,
+                        obscureText: true,
+                      ),
+                      inputFile(
+                        label: "Confirm Password",
+                        hint: "Confirm your password",
+                        controller: _confirmPasswordController,
+                        obscureText: true,
+                      ),
+                      if (isDeliveryPerson)
+                        inputFile(
+                          label: "ID License",
+                          hint: "Enter your ID License",
+                          controller: _idlicenseController,
+                        ),
+                      SizedBox(height: 5),
+                      Row(
                         children: [
-                          inputFile(
-                            label: "ID",
-                            hint: "Enter your ID",
+                          Text(
+                            "Are you a delivery person? ",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Checkbox(
+                            value: isDeliveryPerson,
+                            onChanged: (value) {
+                              setState(() {
+                                isDeliveryPerson = value!;
+                              });
+                            },
                           ),
                         ],
                       ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text(
-                          "Are you a delivery person? ",
+                      SizedBox(height: 15),
+                      MaterialButton(
+                        onPressed: () {
+                          if (_validateFormFields()) {
+                            signup();
+                          }
+                        },
+                        minWidth: double.infinity,
+                        height: 60,
+                        color: Colors.deepOrange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Text(
+                          "Sign up",
                           style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
                           ),
                         ),
-                        Checkbox(
-                          value: isDeliveryPerson,
-                          onChanged: (value) {
-                            setState(() {
-                              isDeliveryPerson = value!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    MaterialButton(
-                      onPressed: () {
-                        // Perform form validation
-                        bool isValid = _validateFormFields();
-                        if (isValid) {
-                          // Navigate to appropriate page based on conditions
-                          if (isDeliveryPerson) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignupV()));
-                          } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage()));
-                          }
-                        }
-                      },
-                      minWidth: double.infinity,
-                      height: 60,
-                      color: Colors.deepOrange,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40),
                       ),
-                      child: Text(
-                        "Sign up",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 7),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
+                      SizedBox(height: 7),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LoginPage()));
-                      },
-                      child: Text(
-                        "Already have an account? Sign in",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                                builder: (context) => LoginPage()),
+                          );
+                        },
+                        child: Text(
+                          "Already have an account? Sign in",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           decoration: BoxDecoration(
@@ -181,12 +272,16 @@ class _SignupPageState extends State<SignupPage> {
       ),
     );
   }
+
+  bool _validateFormFields() {
+    return _formKey.currentState?.validate() ?? false;
+  }
 }
 
 Widget inputFile({
   required String label,
   required String hint,
-  TextEditingController? controller,
+  required TextEditingController controller,
   bool obscureText = false,
 }) {
   return Padding(
@@ -202,9 +297,7 @@ Widget inputFile({
             color: Colors.black87,
           ),
         ),
-        SizedBox(
-          height: 5,
-        ),
+        SizedBox(height: 5),
         TextFormField(
           controller: controller,
           obscureText: obscureText,
@@ -232,20 +325,18 @@ Widget inputFile({
               if (value == null ||
                   value.isEmpty ||
                   int.tryParse(value) == null ||
-                  int.parse(value) < 18 ||
-                  int.parse(value) > 70) {
+                  int.parse(value)! < 18 ||
+                  int.parse(value)! > 70) {
                 return 'Age must be between 18 and 70';
               }
             } else if (label == 'Password') {
               if (value == null ||
                   value.isEmpty ||
-                  value.length < 8 ||
-                  !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$')
-                      .hasMatch(value)) {
-                return 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+                  value.length < 8 ) {
+                return 'Password must be at least 8 characters long ';
               }
             } else if (label == 'Confirm Password') {
-              if (value != controller!.text) {
+              if (value != controller.text) {
                 return 'Passwords do not match';
               }
             } else if (label == 'ID') {
@@ -259,22 +350,14 @@ Widget inputFile({
             return null;
           },
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 15,
-              horizontal: 20,
-            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
             labelText: hint,
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-              ),
+              borderSide: BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.deepPurple,
-                width: 2,
-              ),
+              borderSide: BorderSide(color: Colors.deepPurple, width: 2),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -287,11 +370,4 @@ Widget inputFile({
       ],
     ),
   );
-}
-
-bool _validateFormFields() {
-  print('Validating form fields...');
-  // Implement your validation logic here
-  // For demonstration purposes, returning true
-  return true;
 }

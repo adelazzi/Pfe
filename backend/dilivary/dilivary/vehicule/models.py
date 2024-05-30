@@ -2,7 +2,6 @@
 from django.db import models
 
 # Create your models here.
-from django.db import models
 
 class Vehicle(models.Model):
     CAR = 'CAR'
@@ -36,6 +35,7 @@ class Vehicle(models.Model):
     max_size = models.CharField(max_length=20, choices=MAX_SIZE_CHOICES)
     id_driving_license = models.IntegerField(unique=True)
     model = models.CharField(max_length=50)
+    photo = models.ImageField(upload_to='image/', blank=True, null=True)  # New field
 
     def __str__(self):
         return f'{self.model} ({self.matricule})'
