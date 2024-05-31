@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Vehicle
 from .serializers import VehicleSerializer
+from rest_framework.decorators import api_view, parser_classes  # Add this import
+from rest_framework.parsers import MultiPartParser, FormParser
 
 @api_view(['GET'])
 def vehicle_list(request):
@@ -42,12 +44,9 @@ def vehicle_detail_license(request, id_driving_license):
     return Response(serializer.data)
 
 
-
 @api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
 def create_vehicle(request):
-    """
-    Create a new vehicle.
-    """
     serializer = VehicleSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()

@@ -1,35 +1,48 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-
+import '../../Models/User.dart';
+import '../Login.dart';
 import '../screens/message.dart';
 import '../screens/notification.dart';
-import '../screens/profile.dart';
+import 'profileC.dart';
 import 'home_c.dart';
 import 'map_c.dart'; // Import InAppWebView
 
-
-
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage_C extends StatefulWidget {
+  const HomePage_C({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage_C> {
   int _selectedIndex = 0;
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+  }
+
+  Future<void> loadUser() async {
+    User? fetchedUser = await User.getUserFromPreferences();
+    setState(() {
+      user = fetchedUser;
+    });
+  }
 
   final List<Widget> _screens = [
     HomeScreen(),
     MapScreen(),
     MessageScreen(),
-    ProfileScreen(),
+    ProfileScreen_c(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
+      loadUser();
       _selectedIndex = index;
     });
   }
@@ -48,21 +61,27 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Row(
                   children: [
-                    SizedBox(height: 25,),
+                    SizedBox(
+                      height: 25,
+                    ),
                     CircleAvatar(
-
                       backgroundImage: AssetImage('assets/Avatar.jpg'),
                       radius: 20,
                       // Add onPressed for avatar if needed
                     ),
-                    SizedBox(width: 10,),
-                    Text(
-                      "Username",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    SizedBox(
+                      width: 10,
                     ),
+                    if (user != null)
+                      Text(
+                        user!.username,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      )
+                    else
+                      Text('No user data found.'),
                   ],
                 ),
                 Row(
@@ -72,7 +91,9 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => NotificationScreen(),));
+                            MaterialPageRoute(
+                              builder: (context) => NotificationScreen(),
+                            ));
                         // Add onPressed for notifications button
                       },
                     ),
@@ -109,7 +130,8 @@ class _HomePageState extends State<HomePage> {
             bottom: MediaQuery.of(context).size.height * 0.02,
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 9),
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24.0),
                 color: Colors.white,
@@ -161,7 +183,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
-
-

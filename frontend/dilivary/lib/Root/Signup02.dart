@@ -1,6 +1,15 @@
-import 'package:dilivary/Root/Signup.dart';
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last, prefer_const_literals_to_create_immutables, unused_element, unused_field, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:dilivary/HomeD.dart';
+import 'package:dilivary/Root/Signup.dart';
+import 'package:dilivary/Root/Driver/HomeD.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io'; // For File class
+import 'package:image_picker/image_picker.dart'; // For ImagePicker class
+
+
+import 'Client/homa_page.dart';
 
 class SignupV extends StatefulWidget {
   const SignupV({Key? key}) : super(key: key);
@@ -10,231 +19,288 @@ class SignupV extends StatefulWidget {
 }
 
 class _SignupVState extends State<SignupV> {
-  String? _selectedVehicleType;
-  String? _vehicleModel;
-  String? _vehicleColor;
-  String? _vehicleLicensePlate;
-  String? _vehicleRegistration;
-  String? _vehicleInsurance;
 
-  @override
+final _formKey = GlobalKey<FormState>();
+File? _image;
+// Create TextEditingControllers for the form fields
+final _matriculeController = TextEditingController();
+final _idlicenseController = TextEditingController();
+final _maxwighteController = TextEditingController();
+final _vehiculemodelController = TextEditingController();
+String? _selectedVehicleType;
+String? _selectedVehicleColor;
+String? _selectedVehicleSize;
+
+Future<void> _pickImage() async {
+  final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+  setState(() {
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+    }
+  });
+}
+
+Future<void> createvehicule() async {
+  if (_formKey.currentState?.validate() ?? false) {
+    final data = {
+      'type': _selectedVehicleType,
+      'color': _selectedVehicleColor,
+      'max_weight': int.tryParse(_maxwighteController.text),
+      'model': _vehiculemodelController.text,
+      'matricule': int.tryParse(_matriculeController.text),
+      'id_driving_license': int.tryParse(_idlicenseController.text),
+      'max_size': _selectedVehicleSize,
+    };
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://127.0.0.1:8000/vehicule/create/'),
+    );
+
+    request.fields.addAll(data.map((key, value) => MapEntry(key, value.toString())));
+
+    if (_image != null) {
+      request.files.add(await http.MultipartFile.fromPath('photo', _image!.path));
+    }
+
+    final response = await request.send();
+
+    if (response.statusCode == 201) {
+      final responseBody = await response.stream.bytesToString();
+      final vehicle = json.decode(responseBody);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeDeliveryPage(),
+        ),
+      );
+    } else {
+      final errorResponse = await response.stream.bytesToString();
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(errorResponse ?? 'An error occurred'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  } else {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text('Please fill in all required fields'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/Vector.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SignupPage()));
-                    },
-                    icon: Icon(Icons.arrow_back_ios),
-                    iconSize: 24.0,
-                    color: Colors.black,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    padding: EdgeInsets.all(0),
-                    constraints: BoxConstraints(),
+                  Column(
+                    children: <Widget>[
+                      Text(
+                        "Add your vehicule",
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 17),
+                      Text(
+                        "You created your Account welcome with us Add your Vehicule information captin",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        "let's know your vehicle information",
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black),
-                      ),
-                      SizedBox(height: 20.0),
+                    children: <Widget>[
+                      // Matricule
                       inputFile(
+                        label: "Matricule",
+                        hint: "Enter your Matricule",
+                        controller: _matriculeController,
+                      ),
+                      // Id license
+                      inputFile(
+                        label: "Id License",
+                        hint: "Enter your Id License",
+                        controller: _idlicenseController,
+                      ),
+                      // Max wight
+                      inputFile(
+                        label: "Max Wighte",
+                        hint: "Enter your Max Wighte",
+                        controller: _maxwighteController,
+                      ),
+                      // vehicule Model
+                      inputFile(
+                        label: "vehicule Model",
+                        hint: "Enter your vehicule Model",
+                        controller: _vehiculemodelController,
+                      ),
+
+                      //type
+                      _buildDropdownField(
                         label: 'Vehicle Type',
                         hint: 'Select Vehicle Type',
+                        value: _selectedVehicleType,
                         onChanged: (value) {
                           setState(() {
-                            _selectedVehicleType = value;
+                            _selectedVehicleType = value!;
                           });
                         },
                         items: [
-                          DropdownMenuItem<String>(
-                            value: 'Car',
-                            child: Text('Car',
-                                style: TextStyle(color: Colors.black)),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: 'Motorcycle',
-                            child: Text('Motorcycle',
-                                style: TextStyle(color: Colors.black)),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: 'Other',
-                            child: Text('Other',
-                                style: TextStyle(color: Colors.black)),
-                          ),
+                          DropdownMenuItem(value: 'CAR', child: Text('CAR')),
+                          DropdownMenuItem(value: 'VAN', child: Text('VAN')),
+                          DropdownMenuItem(
+                              value: 'BICYCLE', child: Text('BICYCLE')),
+                          DropdownMenuItem(
+                              value: 'MOTORCYCLE', child: Text('MOTORCYCLE')),
                         ],
                       ),
-                      SizedBox(height: 20.0),
-                      inputFile(
-                        label: 'Vehicle Model',
-                        hint: 'Enter Vehicle Model',
+                      SizedBox(height: 15),
+                      // Size
+                      _buildDropdownField(
+                        label: 'Vehicle Size',
+                        hint: 'Select Vehicle Size',
+                        value: _selectedVehicleSize,
                         onChanged: (value) {
                           setState(() {
-                            _vehicleModel = value;
+                            _selectedVehicleSize = value!;
                           });
                         },
+                        items: [
+                          DropdownMenuItem(
+                              value: 'Large', child: Text('Large')),
+                          DropdownMenuItem(
+                              value: 'Medium', child: Text('Medium')),
+                          DropdownMenuItem(
+                              value: 'Small', child: Text('Small')),
+                          DropdownMenuItem(
+                              value: 'Very Large', child: Text('Very Large')),
+                        ],
                       ),
-                      SizedBox(height: 20.0),
-                      inputFile(
+                      SizedBox(height: 15),
+                      // Color
+                      _buildDropdownField(
                         label: 'Vehicle Color',
-                        hint: 'Enter Vehicle Color',
+                        hint: 'Select Vehicle Color',
+                        value: _selectedVehicleColor,
                         onChanged: (value) {
                           setState(() {
-                            _vehicleColor = value;
+                            _selectedVehicleColor = value!;
                           });
                         },
+                        items: [
+                          DropdownMenuItem(
+                              value: 'Black', child: Text('Black')),
+                          DropdownMenuItem(value: 'Grey', child: Text('Grey')),
+                          DropdownMenuItem(
+                              value: 'White', child: Text('White')),
+                        ],
                       ),
-                      SizedBox(height: 20.0),
-                      inputFile(
-                        label: 'License Plate Number',
-                        hint: 'Enter License Plate Number',
-                        onChanged: (value) {
-                          setState(() {
-                            _vehicleLicensePlate = value;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 20.0),
-                      inputFile(
-                        label: 'Vehicle Registration',
-                        hint: 'Enter Vehicle Registration',
-                        onChanged: (value) {
-                          setState(() {
-                            _vehicleRegistration = value;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 20.0),
-                      inputFile(
-                        label: 'Vehicle Insurance Number',
-                        hint: 'Enter Vehicle Insurance Number',
-                        onChanged: (value) {
-                          setState(() {
-                            _vehicleInsurance = value;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 20.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle uploading vehicle picture
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          minimumSize: Size(double.infinity, 40),
+                      SizedBox(height: 15),
+
+                      GestureDetector(
+                        onTap: _pickImage,
+                        child: Container(
+                          color: Colors.grey[200],
+                          height: 200,
+                          width: double.infinity,
+                          child: _image == null
+                              ? Center(child: Text('Tap to select image'))
+                              : Image.file(_image!, fit: BoxFit.cover),
                         ),
-                        child: Text('Upload Vehicle Picture',
-                            style: TextStyle(color: Colors.black)),
                       ),
-                      SizedBox(height: 20.0),
-                      ElevatedButton(
+
+                      MaterialButton(
                         onPressed: () {
-                          // Handle uploading license plate picture
+                          if (_validateFormFields()) {
+                            createvehicule();
+                          }
                         },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          minimumSize: Size(double.infinity, 40),
+                        minWidth: double.infinity,
+                        height: 60,
+                        color: Colors.deepOrange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40),
                         ),
-                        child: Text('Upload License Plate Picture',
-                            style: TextStyle(color: Colors.black)),
-                      ),
-                      SizedBox(height: 20.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle uploading registration document picture
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                        child: Text(
+                          "Add vehicule",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
                           ),
-                          minimumSize: Size(double.infinity, 40),
                         ),
-                        child: Text('Upload Registration Document Picture',
-                            style: TextStyle(color: Colors.black)),
                       ),
-                      SizedBox(height: 20.0),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Perform signup process with vehicle information
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeDeliveryPage()));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40.0),
-                          ),
-                          minimumSize: Size(double.infinity, 65),
-                          backgroundColor:
-                              const Color.fromARGB(255, 253, 104, 58),
-                        ),
-                        child: Text('Sign up',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                            )),
-                      ),
-                      SizedBox(height: 40.0),
+                      SizedBox(height: 7),
                     ],
                   ),
                 ],
               ),
-            ],
+            ),
+          ),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/Vector.jpg"),
+              fit: BoxFit.fill,
+            ),
           ),
         ),
       ),
     );
   }
+
+  bool _validateFormFields() {
+    return _formKey.currentState?.validate() ?? false;
+  }
 }
 
-class inputFile extends StatelessWidget {
-  final String label;
-  final String hint;
-  final ValueChanged<String>? onChanged;
-  final List<DropdownMenuItem<String>>? items;
-
-  const inputFile({
-    Key? key,
-    required this.label,
-    required this.hint,
-    this.onChanged,
-    this.items,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
+Widget inputFile({
+  required String label,
+  required String hint,
+  required TextEditingController controller,
+  bool obscureText = false,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5.5),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
@@ -245,27 +311,102 @@ class inputFile extends StatelessWidget {
             color: Colors.black87,
           ),
         ),
-        SizedBox(
-          height: 5,
-        ),
-        DropdownButtonFormField<String>(
-          value: null,
-          onChanged: (value) {
-            onChanged?.call(value!);
+        SizedBox(height: 5),
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          validator: (value) {
+            if (label == 'Matricule') {
+              if (value == null ||
+                  value.isEmpty ||
+                  !RegExp(r'^[0-9]{9}$').hasMatch(value)) {
+                return 'Matricule incorrect format';
+              }
+            } else if (label == 'Id License') {
+              if (value == null ||
+                  value.isEmpty ||
+                  !RegExp(r'^[0-9]{9}$').hasMatch(value)) {
+                return 'Id License incorrect format';
+              }
+            } else if (label == 'Max Wighte') {
+              if (value == null ||
+                  value.isEmpty ||
+                  !RegExp(r'^[0-9]+$').hasMatch(value)) {
+                return 'Max Wighte incorrect format';
+              }
+            } else if (label == 'vehicule Model') {
+              if (value == null ||
+                  value.isEmpty ||
+                  value.contains(RegExp(r'[^\w\s]'))) {
+                return 'vehicule Model incorrect format';
+              }
+            }
+            return null;
           },
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            labelText: hint,
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.deepPurple, width: 2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          keyboardType: label == 'Matricule' ||
+                  label == 'Id License' ||
+                  label == 'Max Wighte'
+              ? TextInputType.number
+              : TextInputType.text,
+          textInputAction: TextInputAction.next,
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildDropdownField({
+  required String label,
+  required String hint,
+  required String? value,
+  required ValueChanged<String?> onChanged,
+  required List<DropdownMenuItem<String>> items,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5.5),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        SizedBox(height: 5),
+        DropdownButtonFormField<String>(
+          value: items.any((item) => item.value == value) ? value : null,
+          onChanged: onChanged,
           items: items,
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 15,
-              horizontal: 20,
-            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
             labelText: hint,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
           ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select a $label';
+            }
+            return null;
+          },
         ),
       ],
-    );
-  }
+    ),
+  );
 }

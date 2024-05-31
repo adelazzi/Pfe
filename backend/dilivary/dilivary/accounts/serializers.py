@@ -1,3 +1,5 @@
+#serializer
+
 from rest_framework import serializers
 from .models import CustomUser
 
@@ -5,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'password', 'age', 'phone_number', 'id_number','id_driving_license','user_type']
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'required': False}}
 
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
@@ -28,11 +30,17 @@ class UserSerializer(serializers.ModelSerializer):
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.id_number = validated_data.get('id_number', instance.id_number)
         instance.id_driving_license = validated_data.get('id_driving_license', instance.id_driving_license)
-       
+        
         # Check if password is provided and update it
-        password = validated_data.get('password')
+        password = validated_data.pop('password', None)
+
         if password:
             instance.set_password(password)
+        
+        # Ignore null values
+        for attr, value in validated_data.items():
+            if value is not None:
+                setattr(instance, attr, value)
         
         instance.save()
         return instance
