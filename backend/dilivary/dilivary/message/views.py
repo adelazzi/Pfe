@@ -26,12 +26,12 @@ def create_message(request):
 
 
 @api_view(['GET'])
-def get_command(request, pkclient , pkdriver):
+def get_command(request, fromuser , touser):
     """
     Retrieve a specific command.
     """
     try:
-        messages = Message.objects.filter(iddriver=pkclient, idclient=pkdriver).order_by('timestamp')
+        messages = Message.objects.filter(fromuser=fromuser, touser=touser).order_by('timestamp')
     except Message.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 

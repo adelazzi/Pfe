@@ -9,6 +9,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart'; // Import InApp
 import 'package:geolocator/geolocator.dart';
 
 import '../../Models/User.dart';
+import '../Login.dart';
 import '../screens/message.dart';
 import '../screens/notification.dart';
 import 'homescreenD.dart';
@@ -22,8 +23,8 @@ class HomeDeliveryPage extends StatefulWidget {
 }
 
 class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
-
-    User? user;
+  User? user;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -38,13 +39,6 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
     });
   }
 
-
-
-
-
-
-  int _selectedIndex = 0;
-
   final List<Widget> _screens = [
     HomeScreen(),
     MapScreen(),
@@ -56,6 +50,13 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Future<void> _logout() async {
+    await User.logout();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
   }
 
   @override
@@ -78,11 +79,8 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
                     CircleAvatar(
                       backgroundImage: AssetImage('assets/Avatar.jpg'),
                       radius: 20,
-                      // Add onPressed for avatar if needed
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
+                    SizedBox(width: 10),
                     if (user != null)
                       Text(
                         user!.username,
@@ -101,18 +99,16 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
                       icon: Icon(Icons.notifications),
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NotificationScreen(),
-                            ));
-                        // Add onPressed for notifications button
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NotificationScreen(),
+                          ),
+                        );
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.logout , color: Colors.red,),
-                      onPressed: () {
-                        
-                      },
+                      icon: Icon(Icons.logout, color: Colors.red),
+                      onPressed: _logout,
                     ),
                   ],
                 ),
@@ -121,16 +117,13 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
           ),
         ],
       ),
-
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  "assets/Vector.jpg",
-                ),
+                image: AssetImage("assets/Vector.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -141,7 +134,8 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
             right: 5,
             bottom: MediaQuery.of(context).size.height * 0.02,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24.0),
                 color: Colors.white,
@@ -186,75 +180,6 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
                   ],
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-
-
-
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
-
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  List<String> messages = []; // List to store sent messages
-  TextEditingController messageController = TextEditingController(); // Controller for text field
-
-  // Function to send a message
-  void sendMessage() {
-    if (messageController.text.isNotEmpty) {
-      setState(() {
-        messages.add(messageController.text);
-        // Clear the text field after sending the message
-        messageController.clear();
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Chat Screen'),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(messages[index]),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Type a message...',
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: sendMessage,
-                ),
-              ],
             ),
           ),
         ],

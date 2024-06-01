@@ -46,6 +46,7 @@ def user_login(request):
             user = authenticate(username=username, password=password)
 
         if user:
+            user.last_seen = timezone.now()
             token, _ = Token.objects.get_or_create(user=user)
             return Response({
                 'token': token.key,
@@ -141,3 +142,52 @@ def get_users(request,id):
 
 
 
+
+
+
+
+
+
+@api_view(['DELETE'])
+def delete_user_withid(request, pk):
+    """
+    Delete a specific command.
+    """
+    try:
+        userselect = CustomUser.objects.get(pk=pk)
+    except CustomUser.DoesNotExist:
+        return Response("Not existe pk",status=status.HTTP_404_NOT_FOUND)
+
+    userselect.delete()
+    return Response("deleted",status=status.HTTP_204_NO_CONTENT)
+
+
+# your_app_name/views.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.utils import timezone
+from datetime import timedelta
+from .models import CustomUser
+from .serializers import UserSerializer
+from .utils import is_user_online  # Import the utility function
+
+@api_view(['GET'])
+def get_online_users(request):
+    now = timezone.now()
+    five_minutes_ago = now - timedelta(minutes=5)
+    online_users = CustomUser.objects.filter(last_seen__gte=five_minutes_ago)
+    serializer = UserSerializer(online_users, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def check_user_online(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if is_user_online(user):
+        return Response({"status": "online"})
+    else:
+        return Response({"status": "offline"})

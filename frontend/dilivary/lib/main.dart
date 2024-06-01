@@ -1,7 +1,9 @@
+import 'package:dilivary/CommandScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:dilivary/Root/Login.dart';
 import 'package:dilivary/Root/Signup.dart';
 
+import 'Home_Admin.dart';
 import 'Root/Client/homa_page.dart';
 import 'Root/Driver/HomeD.dart';
 import 'Root/Signup02.dart';
@@ -9,7 +11,7 @@ import 'Root/Signup02.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: LoginPage(),
+    home: HomePage_C(),
   ));
 }
 

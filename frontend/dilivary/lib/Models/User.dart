@@ -45,8 +45,7 @@ class User {
   // Method to login and get User information
   static Future<User?> login(String username, String password) async {
     final response = await http.post(
-      Uri.parse(
-          'http://127.0.0.1:8000/api/login/'), // Replace with your backend URL
+      Uri.parse('http://127.0.0.1:8000/api/login/'), // Replace with your backend URL
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -62,8 +61,7 @@ class User {
       final userId = data['id'];
 
       final userResponse = await http.get(
-        Uri.parse(
-            'http://127.0.0.1:8000/api/get/$userId/'), // Replace with your user info endpoint
+        Uri.parse('http://127.0.0.1:8000/api/get/$userId/'), // Replace with your user info endpoint
         headers: {
           'Authorization': 'Token $token',
         },
@@ -86,15 +84,16 @@ class User {
   Future<void> saveToPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('authToken', token);
+    await prefs.setInt('userId', id);
     await prefs.setString('username', username);
     await prefs.setString('email', email);
     await prefs.setString('userType', userType);
-  if (age != null) {
-    await prefs.setInt('age', age!);
-  }
-  if (id_driving_license != null) {
-    await prefs.setInt('id_driving_license', id_driving_license!);
-  }
+    if (age != null) {
+      await prefs.setInt('age', age!);
+    }
+    if (id_driving_license != null) {
+      await prefs.setInt('id_driving_license', id_driving_license!);
+    }
     await prefs.setString('phone_number', phone_number);
     await prefs.setString('id_number', id_number);
   }
@@ -142,8 +141,7 @@ class User {
 
   static Future<User?> getUserInfo(String token, int userId) async {
     final userResponse = await http.get(
-      Uri.parse(
-          'http://127.0.0.1:8000/api/get/$userId/'), // Replace with your user info endpoint
+      Uri.parse('http://127.0.0.1:8000/api/get/$userId/'), // Replace with your user info endpoint
       headers: {
         'Authorization': 'Token $token',
       },
@@ -159,6 +157,4 @@ class User {
   }
 }
 
-var token = "";
-var userId = 0;
 

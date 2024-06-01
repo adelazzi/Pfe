@@ -20,6 +20,7 @@ class CustomUser(AbstractUser):
     id_number = models.CharField(max_length=9, unique=True, blank=True, null=True)
     id_driving_license = models.IntegerField(unique=True, blank=True, null=True)
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default=CLIENT)
+    last_seen = models.DateTimeField(null=True, blank=True)  # Add this field
 
     def save(self, *args, **kwargs):
         if self.user_type == self.CLIENT:

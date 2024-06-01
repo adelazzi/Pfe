@@ -93,3 +93,6 @@ def get_location(request, pk):
 
     serializer = CommandlocationSerializer(command)
     return Response(serializer.data)
+
+
+

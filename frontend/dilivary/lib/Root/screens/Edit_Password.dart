@@ -117,6 +117,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                     newPassword = _newPasswordController.text;
                     oldPassword = _oldPasswordController.text;
                   });
+                  updateUser();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Passwords do not match')));

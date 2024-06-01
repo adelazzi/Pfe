@@ -10,34 +10,50 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Models/User.dart';
 import '../tools/socialmedia.dart';
 import '../tools/underline.dart';
+import 'Driver/HomeD.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  var NameAdmin = "Administrateur@app.pfe";
-  var PwdAdmin = "Password123";
-
+  String adminuser = "admin";
+  String adminpassword = "admin";
   String enteredEmail = "";
   String enteredPassword = "";
 
   Future<void> _login() async {
-    final mainuser = await User.login(enteredEmail, enteredPassword);
-
-    if (mainuser != null) {
-      await mainuser.saveToPreferences();
-      print(
-          'Login successful: ${mainuser.token}, ${mainuser.userType}, ${mainuser.id},${mainuser.phone_number} , ${mainuser.id_driving_license}');
-
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomePage_C()),
+    if (enteredEmail.isEmpty || enteredPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter both email and password')),
       );
+      return;
+    }
+
+    final mainUser = await User.login(enteredEmail, enteredPassword);
+
+    if (mainUser != null) {
+      await mainUser.saveToPreferences();
+      print(
+          'Login successful: ${mainUser.token}, ${mainUser.userType}, ${mainUser.id}, ${mainUser.phone_number}, ${mainUser.id_driving_license}');
+      if (mainUser.userType == 'Client') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage_C()),
+        );
+      }
+      if (mainUser.userType == 'Driver') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeDeliveryPage()),
+        );
+      }
     } else {
       print('Login failed');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed, please check your credentials')),
+      );
     }
   }
 
@@ -79,7 +95,9 @@ class _LoginPageState extends State<LoginPage> {
               // Email input field
               TextField(
                 onChanged: (value) {
-                  enteredEmail = value; // Update entered email
+                  setState(() {
+                    enteredEmail = value; // Update entered email
+                  });
                 },
                 decoration: InputDecoration(
                   labelText: "Email",
@@ -89,7 +107,9 @@ class _LoginPageState extends State<LoginPage> {
               // Password input field
               TextField(
                 onChanged: (value) {
-                  enteredPassword = value; // Update entered password
+                  setState(() {
+                    enteredPassword = value; // Update entered password
+                  });
                 },
                 obscureText: true,
                 decoration: InputDecoration(
@@ -106,7 +126,16 @@ class _LoginPageState extends State<LoginPage> {
                   border: Border.all(color: Colors.black),
                 ),
                 child: MaterialButton(
-                  onPressed: _login,
+                  onPressed: () {
+                    if (adminuser == enteredEmail &&
+                        adminpassword == enteredPassword) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => HomeAdminPage()),
+                      );
+                    } else {
+                      _login();
+                    }
+                  },
                   minWidth: double.infinity,
                   height: 60,
                   color: Colors.deepOrangeAccent,
@@ -127,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
 
               or_(),
               // Google login button
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

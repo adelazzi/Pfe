@@ -4,7 +4,7 @@ from .models import Message
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['iddriver', 'idclient', 'textmessage', 'timestamp']
+        fields = ['fromuser', 'touser', 'textmessage', 'timestamp']
     
     def create(self, validated_data):
         return Message.objects.create(**validated_data)
@@ -25,4 +25,4 @@ class MessageSerializer(serializers.ModelSerializer):
 class MessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['id', 'iddriver', 'idclient', 'textmessage', 'timestamp']
+        fields = ['id', 'fromuser', 'touser', 'textmessage', 'timestamp']

@@ -13,10 +13,9 @@ class HomePage_C extends StatefulWidget {
   const HomePage_C({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePage_CState createState() => _HomePage_CState();
 }
-
-class _HomePageState extends State<HomePage_C> {
+class _HomePage_CState extends State<HomePage_C> {
   int _selectedIndex = 0;
   User? user;
 
@@ -42,9 +41,16 @@ class _HomePageState extends State<HomePage_C> {
 
   void _onItemTapped(int index) {
     setState(() {
-      loadUser();
       _selectedIndex = index;
     });
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    await User.logout();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
   }
 
   @override
@@ -74,7 +80,7 @@ class _HomePageState extends State<HomePage_C> {
                     ),
                     if (user != null)
                       Text(
-                        user!.username,
+                        user!.username ?? 'No username',
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
@@ -90,18 +96,17 @@ class _HomePageState extends State<HomePage_C> {
                       icon: Icon(Icons.notifications),
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NotificationScreen(),
-                            ));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NotificationScreen(),
+                          ),
+                        );
                         // Add onPressed for notifications button
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.more_vert),
-                      onPressed: () {
-                        // Add onPressed for three dots button
-                      },
+                      icon: Icon(Icons.logout, color: Colors.red),
+                      onPressed: () => _logout(context),
                     ),
                   ],
                 ),
@@ -130,8 +135,7 @@ class _HomePageState extends State<HomePage_C> {
             bottom: MediaQuery.of(context).size.height * 0.02,
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 9),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24.0),
                 color: Colors.white,

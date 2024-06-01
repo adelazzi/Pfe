@@ -1,12 +1,13 @@
 #serializer
 
+from datetime import timezone
 from rest_framework import serializers
 from .models import CustomUser
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password', 'age', 'phone_number', 'id_number','id_driving_license','user_type']
+        fields = ['id','username', 'email', 'password','last_seen', 'age', 'phone_number', 'id_number','id_driving_license','user_type']
         extra_kwargs = {'password': {'required': False}}
 
     def create(self, validated_data):
@@ -19,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             id_number=validated_data.get('id_number'),
             id_driving_license = validated_data.get('id_driving_license'),
             user_type=validated_data.get('user_type'),
+            last_seen=timezone.now(),
             
         )
         return user
