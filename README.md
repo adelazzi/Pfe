@@ -27,9 +27,6 @@ In this project, we developed a method to improve delivery efficiency using adva
 </ul>
 
 
-other detailes on [Mémoire PFE 2023_2024 ADEL & REDHA.pdf](https://github.com/user-attachments/files/15803950/Memoire.PFE.2023_2024.ADEL.REDHA.pdf)
-
-
 
 
 
