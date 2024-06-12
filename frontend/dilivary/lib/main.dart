@@ -11,7 +11,7 @@ import 'Root/Signup02.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: HomePage_C(),
+    home: MAIN(),
   ));
 }
 

@@ -1,8 +1,9 @@
-
-
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
+import '../../Models/User.dart';
 
 class ContactUsScreen extends StatefulWidget {
   @override
@@ -13,6 +14,37 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
   final _descriptionController = TextEditingController();
   String _contactType = 'Report';
   List<Map<String, String>> contactSubmissions = [];
+
+  Future<void> createMessage(String textMessage) async {
+    final url = 'http://127.0.0.1:8000/message/Create/';
+    int? id = DataId().data;
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'fromuser': id,
+          'touser': 0,
+          'textmessage': textMessage,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Contact submission sent')));
+        _descriptionController.clear();
+        print('Message created successfully');
+      } else {
+        // Error creating message
+        print('Failed to create message: ${response.body}');
+      }
+    } catch (e) {
+      // Exception occurred
+      print('Error creating message: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,13 +114,17 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                   'type': _contactType,
                   'description': _descriptionController.text,
                 });
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Contact submission sent')));
-                _descriptionController.clear();
+                createMessage(_descriptionController.text);
               },
-              child: Text('Submit',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,color: Colors.white),),
-
+              child: Text(
+                'Submit',
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 backgroundColor: Colors.deepOrange,
                 side: BorderSide(color: Colors.transparent),
                 shadowColor: Colors.black,

@@ -53,7 +53,17 @@ def create_vehicle(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Vehicle
+from .serializers import VehicleSerializer
+
 @api_view(['PUT'])
+@parser_classes([MultiPartParser, FormParser])
 def update_vehicle(request, matricule):
     """
     Update an existing vehicle.
@@ -63,7 +73,7 @@ def update_vehicle(request, matricule):
     except Vehicle.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = VehicleSerializer(vehicle, data=request.data)
+    serializer = VehicleSerializer(vehicle, data=request.data, partial=True)  # Allow partial updates
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)

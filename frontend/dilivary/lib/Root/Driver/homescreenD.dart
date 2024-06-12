@@ -1,13 +1,11 @@
-
-
-
 import 'package:flutter/material.dart';
 
+import '../../Models/User.dart';
 import '../screens/SeeCommandAviable.dart';
 import '../screens/notification.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -18,9 +16,22 @@ class _HomeScreenState extends State<HomeScreen> {
     {"name": "Dahmani Mohamed", "status": "Online"},
     {"name": "Ferdjani Kouider", "status": "Offline"},
     // Add more delivery persons as needed
-
   ];
-  late int i;
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+  }
+
+  Future<void> loadUser() async {
+    User? fetchedUser = await User.getUserFromPreferences();
+    setState(() {
+      user = fetchedUser;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,9 +43,45 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-       
               SizedBox(height: 20),
               // Add Command Card
+              Card(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "here you can see your command ! ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      // Add Command Button
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Navigate to Command Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SeeCommandYourCommand(
+                                iddriver: user!.id,
+                              ),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.remove_red_eye_outlined),
+                        label: Text("See Command"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              //
               Card(
                 color: Colors.transparent,
                 child: Padding(
@@ -56,7 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           // Navigate to Command Screen
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => SeeCommandAviable()),
+                            MaterialPageRoute(
+                                builder: (context) => SeeCommandAvailable()),
                           );
                         },
                         icon: Icon(Icons.remove_red_eye_outlined),
@@ -152,8 +200,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: livreurs.length,
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: Text(livreurs[index]["name"]+"",style: TextStyle(fontWeight:  FontWeight.bold),),
-                            subtitle: Text(">"+livreurs[index]["status"]+"\n",style:TextStyle( fontWeight: FontWeight.w500 )),
+                            title: Text(
+                              livreurs[index]["name"] + "",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                                ">" + livreurs[index]["status"] + "\n",
+                                style: TextStyle(fontWeight: FontWeight.w500)),
                             // Add onTap functionality if needed
                           );
                         },

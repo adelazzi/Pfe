@@ -22,3 +22,10 @@ class VehicleSerializer(serializers.ModelSerializer):
             photo=photo,
         )
         return vehicle
+    
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if value is not None:
+                setattr(instance, attr, value)
+        instance.save()
+        return instance

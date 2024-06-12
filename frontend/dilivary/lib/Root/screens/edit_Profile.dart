@@ -11,7 +11,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   String? name; // Default name
-  String? email; // Default email
+  String? email; 
   String? phoneNumber; // Default phone number
   int? age;
   String? idnumber;
@@ -66,7 +66,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         String errorMessage;
         try {
           final errorResponse = json.decode(response.body);
-          errorMessage = errorResponse['error'] ?? 'Failed to update user';
+          errorMessage = errorResponse['message'] ?? 'Failed to update user';
         } catch (e) {
           errorMessage = 'Failed to update user';
         }
@@ -78,7 +78,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       // Handle error
       print('Error: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $error')),
+        SnackBar(content: Text('u didnt update all the value the value u add updated successfully')),
       );
     }
   }

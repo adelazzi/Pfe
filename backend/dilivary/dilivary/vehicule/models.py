@@ -1,7 +1,19 @@
 
 from django.db import models
+import os
 
 # Create your models here.
+
+def vehicle_photo_path(instance, filename):
+    # Get the file's extension
+    ext = filename.split('.')[-1]
+    # Rename the file to the vehicle's matricule value
+    filename = f'{instance.matricule}.{ext}'
+    # Return the new filename
+    return os.path.join('image/', filename)
+
+
+
 
 class Vehicle(models.Model):
     CAR = 'CAR'
@@ -33,9 +45,9 @@ class Vehicle(models.Model):
     type = models.CharField(max_length=20, choices=VEHICLE_TYPES)
     max_weight = models.IntegerField()
     max_size = models.CharField(max_length=20, choices=MAX_SIZE_CHOICES)
-    id_driving_license = models.IntegerField(unique=True)
+    id_driving_license = models.IntegerField()
     model = models.CharField(max_length=50)
-    photo = models.ImageField(upload_to='image/', blank=True, null=True)  # New field
+    photo = models.ImageField(upload_to=vehicle_photo_path, blank=True, null=True)  # New field
 
     def __str__(self):
         return f'{self.model} ({self.matricule})'

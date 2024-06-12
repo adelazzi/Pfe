@@ -1,10 +1,8 @@
-
 // ignore_for_file: unused_element, must_be_immutable
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'; // Import InAppWebView
-
 
 import 'package:geolocator/geolocator.dart';
 
@@ -15,6 +13,7 @@ import '../screens/notification.dart';
 import 'homescreenD.dart';
 import 'mapD.dart';
 import 'profileD.dart';
+
 class HomeDeliveryPage extends StatefulWidget {
   const HomeDeliveryPage({Key? key}) : super(key: key);
 
@@ -42,7 +41,7 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
   final List<Widget> _screens = [
     HomeScreen(),
     MapScreen(),
-    MessageScreen(),
+    MessageScreenD(),
     ProfileScreenD(),
   ];
 
@@ -98,6 +97,7 @@ class _HomeDeliveryPageState extends State<HomeDeliveryPage> {
                     IconButton(
                       icon: Icon(Icons.notifications),
                       onPressed: () {
+                        loadUser();
                         Navigator.push(
                           context,
                           MaterialPageRoute(

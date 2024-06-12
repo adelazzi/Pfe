@@ -96,7 +96,7 @@ class _MessageScreenState extends State<MessageScreen> {
                       // Navigate to chat screen when tapping on a delivery person
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ChatScreen(id2:drivers[index]["id"],id1: user!.id,)),
+                        MaterialPageRoute(builder: (context) => ChatScreen(id2:drivers[index]["id"],id1: user!.id, username: drivers[index]["username"],)),
                       );
                     },
                   );
@@ -136,6 +136,108 @@ Future<List<dynamic>> fetchUsers(String? typeUser) async {
 
 
 
+class MessageScreenD extends StatefulWidget {
+  
+  @override
+  _MessageScreenDState createState() => _MessageScreenDState();
+}
+
+class _MessageScreenDState extends State<MessageScreenD> {
+  List<dynamic> drivers = []; // Renamed to lowercase 'clients'
+
+   User? user;
+
+
+
+  Future<void> loadUser() async {
+    User? fetchedUser = await User.getUserFromPreferences();
+    setState(() {
+      user = fetchedUser;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadUser();
+    _fetchClients(); // Call the function to fetch clients
+  }
+
+  Future<void> _fetchClients() async {
+    try {
+      final List<dynamic> fetchedClients =
+          await fetchUsers('Client'); // Fetch clients
+      setState(() {
+        drivers = fetchedClients; // Update the 'clients' list with fetched data
+      });
+    } catch (e) {
+      // Handle error
+      print("Error fetching clients: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/Vector.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 40,
+            ),
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                ),
+              ),
+            ),
+            // List of Delivery Persons
+            Expanded(
+              child: ListView.builder(
+                itemCount: drivers.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          ),
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage('assets/Avatar.jpg'),
+                        // You can replace this with the actual profile image
+                      ),
+                    ),
+                    title: Text(drivers[index]["username"]),
+                    onTap: () {
+                      // Navigate to chat screen when tapping on a delivery person
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ChatScreen(id2:drivers[index]["id"],id1: user!.id, username: drivers[index]["username"],)),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 
 

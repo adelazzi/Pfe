@@ -1,15 +1,14 @@
-// ignore_for_file: unused_element
+// ignore_for_file: unused_element, must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart'; // Add this dependency for generating random strings
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../Models/User.dart';
 import '../Driver/HomeD.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class EditPasswordScreen extends StatefulWidget {
-  const EditPasswordScreen({Key? key}) : super(key: key);
-
   @override
   _EditPasswordScreenState createState() => _EditPasswordScreenState();
 }
@@ -20,6 +19,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
   final _confirmPasswordController = TextEditingController();
   String? newPassword;
   String? oldPassword;
+  String? correntpassword;
 
   Future<void> updateUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -46,6 +46,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
       );
 
       if (response.statusCode == 200) {
+         DataPassword().data = oldPassword!;
         // User updated successfully
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('User updated successfully')),
@@ -116,8 +117,16 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                   setState(() {
                     newPassword = _newPasswordController.text;
                     oldPassword = _oldPasswordController.text;
+                    correntpassword = DataPassword().data;
                   });
-                  updateUser();
+                  if (correntpassword == oldPassword && oldPassword != null) {
+                    
+                    updateUser();
+                    
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('old password doesnt match')));
+                  }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Passwords do not match')));

@@ -19,42 +19,40 @@ def register_user(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
-
-from .models import CustomUser
+from rest_framework.authtoken.models import Token
+from .models import CustomUser  # Adjust the import based on your actual models
 
 @api_view(['POST'])
 def user_login(request):
-    if request.method == 'POST':
-        username = request.data.get('username')
-        password = request.data.get('password')
+    username = request.data.get('username')
+    password = request.data.get('password')
 
-        user = None
-        if '@' in username:
-            try:
-                user = CustomUser.objects.get(email=username)
-            except ObjectDoesNotExist:
-                pass
+    user = None
+    if '@' in username:
+        try:
+            user = CustomUser.objects.get(email=username)
+            # Verify the password for the user found by email
+            if not user.check_password(password):
+                return Response({'error': 'Erreur password'}, status=status.HTTP_401_UNAUTHORIZED)
+        except ObjectDoesNotExist:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        user = authenticate(username=username, password=password)
 
-        if not user:
-            user = authenticate(username=username, password=password)
+    if user:
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_type': user.user_type,
+            'id': user.id
+        }, status=status.HTTP_200_OK)
 
-        if user:
-            user.last_seen = timezone.now()
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({
-                'token': token.key,
-                'user_type': user.user_type,
-                'id': user.id
-            }, status=status.HTTP_200_OK)
-
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+    return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 from rest_framework.permissions import IsAuthenticated

@@ -37,6 +37,8 @@ class _LoginPageState extends State<LoginPage> {
 
     if (mainUser != null) {
       await mainUser.saveToPreferences();
+      DataPassword().data = enteredPassword;
+      DataId().data = mainUser.id;
       print(
           'Login successful: ${mainUser.token}, ${mainUser.userType}, ${mainUser.id}, ${mainUser.phone_number}, ${mainUser.id_driving_license}');
       if (mainUser.userType == 'Client') {
@@ -130,7 +132,8 @@ class _LoginPageState extends State<LoginPage> {
                     if (adminuser == enteredEmail &&
                         adminpassword == enteredPassword) {
                       Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => HomeAdminPage()),
+                        MaterialPageRoute(
+                            builder: (context) => HomeAdminPage()),
                       );
                     } else {
                       _login();

@@ -2,8 +2,13 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:dilivary/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+
+import 'Models/User.dart';
+import 'Root/Login.dart';
+import 'Root/screens/SeeCommandAviable.dart';
 
 class HomeAdminPage extends StatefulWidget {
   const HomeAdminPage({Key? key}) : super(key: key);
@@ -14,14 +19,7 @@ class HomeAdminPage extends StatefulWidget {
 class _HomeAdminPageState extends State<HomeAdminPage> {
   int _selectedIndex = 0;
   final List<Widget> _screens = [
-    Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/Vector.jpg"),
-          fit: BoxFit.cover,
-        ),
-      ),
-    ),
+    Homeadmin(),
     ClientScreen(),
     DeliveryPersonScreen(),
     Container(
@@ -39,10 +37,42 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
     });
   }
 
+  Future<void> _logout() async {
+    await User.logout();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => MAIN()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Administration"),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.logout, color: Colors.red),
+                  onPressed: _logout,
+                ),
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    // Add your search functionality here
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
@@ -114,10 +144,6 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
   }
 }
 
-
-
-
-
 class Homeadmin extends StatefulWidget {
   const Homeadmin({Key? key}) : super(key: key);
 
@@ -126,27 +152,101 @@ class Homeadmin extends StatefulWidget {
 }
 
 class _HomeadminState extends State<Homeadmin> {
+  List<Map<String, dynamic>> livreurs = [
+    {"name": "Dahmani Mohamed", "status": "Online"},
+    {"name": "Ferdjani Kouider", "status": "Offline"},
+    // Add more delivery persons as needed
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage('assets/Vector.jpg')),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20),
+              // Add Command Card
+              Card(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "See all commands ! ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      // Add Command Button
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Navigate to Command Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SeeCommandAvailableAdmin(),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.remove_red_eye_outlined),
+                        label: Text("See Command"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              //
+              Card(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "See all vehicules !",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      // Add Command Button
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Navigate to Command Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SeeAllVehicule()),
+                          );
+                        },
+                        icon: Icon(Icons.remove_red_eye_outlined),
+                        label: Text("See Command"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Transaction History Card
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class ClientScreen extends StatefulWidget {
   @override
@@ -178,17 +278,6 @@ class _ClientScreenState extends State<ClientScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Add your search functionality here
-            },
-          ),
-        ],
-      ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -357,18 +446,6 @@ class _DeliveryPersonScreenState extends State<DeliveryPersonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Add your search functionality here
-            },
-          ),
-        ],
-      ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -388,6 +465,7 @@ class _DeliveryPersonScreenState extends State<DeliveryPersonScreen> {
               email: drivers[index]['email'],
               phonenumber: drivers[index]['phone_number'],
               age: drivers[index]['age'],
+              idlicense: drivers[index]['id_driving_license'],
             );
           },
         ),
@@ -436,8 +514,8 @@ class DriverListItem extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () {
-              showUserDetailsDialog(
-                  context, userid, name, email, age, id, phonenumber);
+              showDriverDetailsDialog(context, userid, name, email, age, id,
+                  phonenumber, idlicense);
             },
           ),
         ],
@@ -516,3 +594,6 @@ Future<void> deleteUser(int? userId) async {
     // Handle other status codes if needed
   }
 }
+
+
+

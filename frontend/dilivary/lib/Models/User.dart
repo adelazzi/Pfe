@@ -15,7 +15,9 @@ class User {
   final String phone_number;
   final String id_number;
 
+
   User({
+
     required this.id,
     required this.username,
     required this.email,
@@ -28,8 +30,10 @@ class User {
   });
 
   // Factory constructor to create a User from JSON
-  factory User.fromJson(Map<String, dynamic> json, String token, int userId) {
+  factory User.fromJson(
+      Map<String, dynamic> json, String token, int userId) {
     return User(
+
       id: userId,
       username: json['username'],
       email: json['email'],
@@ -42,10 +46,25 @@ class User {
     );
   }
 
+  factory User.fromJsons(Map<String, dynamic> json, int userId) {
+    return User(
+      id: userId,
+      username: json['username'],
+      email: json['email'],
+      userType: json['user_type'],
+      age: json['age'] ?? 0,
+      id_driving_license: json['id_driving_license'],
+      phone_number: json['phone_number'],
+      id_number: json['id_number'],
+      token: '',
+    );
+  }
+
   // Method to login and get User information
   static Future<User?> login(String username, String password) async {
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/login/'), // Replace with your backend URL
+      Uri.parse(
+          'http://127.0.0.1:8000/api/login/'), // Replace with your backend URL
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -61,7 +80,8 @@ class User {
       final userId = data['id'];
 
       final userResponse = await http.get(
-        Uri.parse('http://127.0.0.1:8000/api/get/$userId/'), // Replace with your user info endpoint
+        Uri.parse(
+            'http://127.0.0.1:8000/api/get/$userId/'), // Replace with your user info endpoint
         headers: {
           'Authorization': 'Token $token',
         },
@@ -88,6 +108,7 @@ class User {
     await prefs.setString('username', username);
     await prefs.setString('email', email);
     await prefs.setString('userType', userType);
+
     if (age != null) {
       await prefs.setInt('age', age!);
     }
@@ -110,6 +131,7 @@ class User {
     final id_driving_license = prefs.getInt('id_driving_license');
     final phone_number = prefs.getString('phone_number');
     final id_number = prefs.getString('id_number');
+
 
     if (token != null &&
         id != null &&
@@ -139,22 +161,45 @@ class User {
     await prefs.clear();
   }
 
-  static Future<User?> getUserInfo(String token, int userId) async {
+  static Future<User?> getUserInfo(int userId) async {
     final userResponse = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/get/$userId/'), // Replace with your user info endpoint
-      headers: {
-        'Authorization': 'Token $token',
-      },
+      Uri.parse(
+          'http://127.0.0.1:8000/api/get/$userId/'), // Replace with your user info endpoint
     );
-
     if (userResponse.statusCode == 200) {
       final userData = jsonDecode(userResponse.body);
-      return User.fromJson(userData, token, userId);
+      return User.fromJsons(userData, userId);
     } else {
-      // Handle error
       return null;
     }
   }
 }
 
 
+
+
+
+class DataPassword {
+  static final DataPassword _instance = DataPassword._internal();
+
+
+  factory DataPassword() {
+    return _instance;
+  }
+
+  DataPassword._internal();
+
+  String data = "";
+}
+class DataId {
+  static final DataId _instance = DataId._internal();
+
+
+  factory DataId() {
+    return _instance;
+  }
+
+  DataId._internal();
+
+  int? data ;
+}

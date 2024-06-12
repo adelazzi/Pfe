@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import '../../Models/User.dart';
 import '../screens/Edit_Password.dart';
 import '../screens/Editvehicule.dart';
@@ -10,8 +10,8 @@ import '../screens/edit_Profile.dart';
 import '../screens/helpand seport.dart';
 import '../screens/notification.dart';
 
-
 class ProfileScreenD extends StatefulWidget {
+
   @override
   State<ProfileScreenD> createState() => _ProfileScreenState();
 }
@@ -80,7 +80,6 @@ class _ProfileScreenState extends State<ProfileScreenD> {
                       )
                     else
                       Text('No user data found.'),
-                    
                     if (user != null)
                       Text(
                         "${user!.email} | +213 ${user!.phone_number}",
@@ -94,163 +93,182 @@ class _ProfileScreenState extends State<ProfileScreenD> {
                 ),
               ),
             ),
-          const SizedBox(height: 20),
-          Card(
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>
-                            EditProfileScreen()), // Navigate to EditProfileScreen
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.edit,
-                      color: Colors.black,
+            const SizedBox(height: 20),
+            Card(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  EditProfileScreen()), // Navigate to EditProfileScreen
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.black,
+                      ),
+                      label: const Text(
+                        "Edit Profil Information",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                    label: const Text(
-                      "Edit Profil Information",
-                      style: TextStyle(color: Colors.black),
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => VehiculScreen(
+                                    id_driving_license:
+                                        user!.id_driving_license ?? 0,
+                                  )), // Navigate to EditProfileScreen
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.delivery_dining,
+                        color: Colors.black,
+                      ),
+                      label: const Text(
+                        "Edit Vehicule Information",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>
-                            EditVehicleInfoScreen()), // Navigate to EditProfileScreen
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.delivery_dining,
-                      color: Colors.black,
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddVehicleInfoScreen(
+                                    id_driving_license:
+                                        user!.id_driving_license,
+                                  )), // Navigate to EditProfileScreen
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.add_circle_outline,
+                        color: Colors.black,
+                      ),
+                      label: const Text(
+                        "Add Vehicule Information",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                    label: const Text(
-                      "Edit Vehicule Information",
-                      style: TextStyle(color: Colors.black),
+                    TextButton.icon(
+                      onPressed: () {
+                        // Add functionality for showing notifications
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NotificationScreen()));
+                      },
+                      icon: const Icon(
+                        Icons.notifications,
+                        color: Colors.black,
+                      ),
+                      label: const Text(
+                        "Notification",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>
-                            AddVehicleInfoScreen()), // Navigate to EditProfileScreen
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.add_circle_outline,
-                      color: Colors.black,
+                    TextButton.icon(
+                      onPressed: () {
+                        _showLanguageDialog(context);
+                      },
+                      icon: const Icon(
+                        Icons.language_outlined,
+                        color: Colors.black,
+                      ),
+                      label: const Text(
+                        "Language",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                    label: const Text(
-                      "Add Vehicule Information",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {
-                      // Add functionality for showing notifications
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> NotificationScreen()));
-
-                    },
-                    icon: const Icon(
-                      Icons.notifications,
-                      color: Colors.black,
-                    ),
-                    label: const Text(
-                      "Notification",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {
-                      _showLanguageDialog(context);
-                    },
-                    icon: const Icon(
-                      Icons.language_outlined,
-                      color: Colors.black,
-                    ),
-                    label: const Text(
-                      "Language",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Card(
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => EditPasswordScreen()),);
-                    },
-                    icon: const Icon(
-                      Icons.security,
-                      color: Colors.black,
+            const SizedBox(
+              height: 20,
+            ),
+            Card(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditPasswordScreen(
+                                
+                                  )),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.security,
+                        color: Colors.black,
+                      ),
+                      label: const Text(
+                        "Security",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                    label: const Text(
-                      "Security",
-                      style: TextStyle(color: Colors.black),
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HelpSupportScreen()),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.help,
+                        color: Colors.black,
+                      ),
+                      label: const Text(
+                        "Help & Support",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => HelpSupportScreen()),);
-                    },
-                    icon: const Icon(
-                      Icons.help,
-                      color: Colors.black,
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ContactUsScreen()),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.contact_support,
+                        color: Colors.black,
+                      ),
+                      label: const Text(
+                        "Contact us",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
-                    label: const Text(
-                      "Help & Support",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ContactUsScreen()),);
-                    },
-                    icon: const Icon(
-                      Icons.contact_support,
-                      color: Colors.black,
-                    ),
-                    label: const Text(
-                      "Contact us",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 80,
-          ),
-        ],
+            const SizedBox(
+              height: 80,
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
 
 void _showLanguageDialog(BuildContext context) {
   showDialog(

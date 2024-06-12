@@ -1,81 +1,101 @@
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io'; // For File class
 import 'package:image_picker/image_picker.dart'; // For ImagePicker class
 
-
 import 'package:flutter/material.dart';
+
 class AddVehicleInfoScreen extends StatefulWidget {
-  const AddVehicleInfoScreen({Key? key}) : super(key: key);
+  int? id_driving_license;
+  AddVehicleInfoScreen({required this.id_driving_license,Key? key}) : super(key: key);
 
   @override
   _SignupVState createState() => _SignupVState();
 }
 
 class _SignupVState extends State<AddVehicleInfoScreen> {
-
-final _formKey = GlobalKey<FormState>();
-File? _image;
+  final _formKey = GlobalKey<FormState>();
+  File? _image;
 // Create TextEditingControllers for the form fields
-final _matriculeController = TextEditingController();
-final _idlicenseController = TextEditingController();
-final _maxwighteController = TextEditingController();
-final _vehiculemodelController = TextEditingController();
-String? _selectedVehicleType;
-String? _selectedVehicleColor;
-String? _selectedVehicleSize;
+  final _matriculeController = TextEditingController();
+  final _idlicenseController = TextEditingController();
+  final _maxwighteController = TextEditingController();
+  final _vehiculemodelController = TextEditingController();
+  String? _selectedVehicleType;
+  String? _selectedVehicleColor;
+  String? _selectedVehicleSize;
 
-Future<void> _pickImage() async {
-  final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
-  setState(() {
-    if (pickedFile != null) {
-      _image = File(pickedFile.path);
-    }
-  });
-}
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
 
-Future<void> createvehicule() async {
-  if (_formKey.currentState?.validate() ?? false) {
-    final data = {
-      'type': _selectedVehicleType,
-      'color': _selectedVehicleColor,
-      'max_weight': int.tryParse(_maxwighteController.text),
-      'model': _vehiculemodelController.text,
-      'matricule': int.tryParse(_matriculeController.text),
-      'id_driving_license': int.tryParse(_idlicenseController.text),
-      'max_size': _selectedVehicleSize,
-    };
+  Future<void> createvehicule() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      final data = {
+        'type': _selectedVehicleType,
+        'color': _selectedVehicleColor,
+        'max_weight': int.tryParse(_maxwighteController.text),
+        'model': _vehiculemodelController.text,
+        'matricule': int.tryParse(_matriculeController.text),
+        'id_driving_license': widget.id_driving_license,
+        'max_size': _selectedVehicleSize,
+      };
 
-    final request = http.MultipartRequest(
-      'POST',
-      Uri.parse('http://127.0.0.1:8000/vehicule/create/'),
-    );
-
-    request.fields.addAll(data.map((key, value) => MapEntry(key, value.toString())));
-
-    if (_image != null) {
-      request.files.add(await http.MultipartFile.fromPath('photo', _image!.path));
-    }
-
-    final response = await request.send();
-
-    if (response.statusCode == 201) {
-      final responseBody = await response.stream.bytesToString();
-      final vehicle = json.decode(responseBody);
-      Navigator.pop(
-        context,
-        
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://127.0.0.1:8000/vehicule/create/'),
       );
+
+      request.fields
+          .addAll(data.map((key, value) => MapEntry(key, value.toString())));
+
+      if (_image != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('photo', _image!.path));
+      }
+
+      final response = await request.send();
+
+      if (response.statusCode == 201) {
+        final responseBody = await response.stream.bytesToString();
+        final vehicle = json.decode(responseBody);
+        Navigator.pop(
+          context,
+        );
+      } else {
+        final errorResponse = await response.stream.bytesToString();
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text(errorResponse ?? 'An error occurred'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     } else {
-      final errorResponse = await response.stream.bytesToString();
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text('Error'),
-            content: Text(errorResponse ?? 'An error occurred'),
+            content: Text('Please fill in all required fields'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -88,33 +108,15 @@ Future<void> createvehicule() async {
         },
       );
     }
-  } else {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Error'),
-          content: Text('Please fill in all required fields'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
-}
- @override
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        
+      body: 
+      SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height,
           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
@@ -149,12 +151,6 @@ Future<void> createvehicule() async {
                         label: "Matricule",
                         hint: "Enter your Matricule",
                         controller: _matriculeController,
-                      ),
-                      // Id license
-                      inputFile(
-                        label: "Id License",
-                        hint: "Enter your Id License",
-                        controller: _idlicenseController,
                       ),
                       // Max wight
                       inputFile(
@@ -278,8 +274,8 @@ Future<void> createvehicule() async {
             ),
           ),
         ),
-      ),
-    );
+      )
+      ,);
   }
 
   bool _validateFormFields() {

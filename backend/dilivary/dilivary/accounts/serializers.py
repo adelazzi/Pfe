@@ -20,32 +20,34 @@ class UserSerializer(serializers.ModelSerializer):
             id_number=validated_data.get('id_number'),
             id_driving_license = validated_data.get('id_driving_license'),
             user_type=validated_data.get('user_type'),
-            last_seen=timezone.now(),
             
         )
         return user
 
+    
     def update(self, instance, validated_data):
-        instance.username = validated_data.get('username', instance.username)
-        instance.email = validated_data.get('email', instance.email)
-        instance.age = validated_data.get('age', instance.age)
-        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
-        instance.id_number = validated_data.get('id_number', instance.id_number)
-        instance.id_driving_license = validated_data.get('id_driving_license', instance.id_driving_license)
-        
+        # Update only if value is not None
+        if validated_data.get('username') is not None:
+            instance.username = validated_data['username']
+        if validated_data.get('email') is not None:
+            instance.email = validated_data['email']
+        if validated_data.get('age') is not None:
+            instance.age = validated_data['age']
+        if validated_data.get('phone_number') is not None:
+            instance.phone_number = validated_data['phone_number']
+        if validated_data.get('id_number') is not None:
+            instance.id_number = validated_data['id_number']
+        if validated_data.get('id_driving_license') is not None:
+            instance.id_driving_license = validated_data['id_driving_license']
+
         # Check if password is provided and update it
         password = validated_data.pop('password', None)
-
         if password:
             instance.set_password(password)
-        
-        # Ignore null values
-        for attr, value in validated_data.items():
-            if value is not None:
-                setattr(instance, attr, value)
-        
+
         instance.save()
         return instance
+
 
     def remove(self, instance):
         instance.delete()

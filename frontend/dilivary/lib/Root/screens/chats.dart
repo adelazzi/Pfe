@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
@@ -7,8 +10,9 @@ import 'dart:convert';
 class ChatScreen extends StatefulWidget {
   final int id1;
   final int id2;
+  final String username;
 
-  const ChatScreen({Key? key, required this.id1, required this.id2})
+  const ChatScreen({Key? key,required this.username, required this.id1, required this.id2})
       : super(key: key);
 
   @override
@@ -80,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
           'textmessage': textMessage,
         }),
       );
-
+      fetchMessages();
       if (response.statusCode == 201) {
         // Message created successfully
         print('Message created successfully');
@@ -94,15 +98,11 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat with ${widget.id2}'),
+        title: Text('Chat with ' + widget.username),
       ),
       body: Column(
         children: [
@@ -135,13 +135,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 IconButton(
                   icon: Icon(Icons.send),
                   onPressed: () {
-                    if(messageController.text.isNotEmpty){
-                      final text = messageController.text; // Get the text from the TextField
-                      createMessage(text); // Call createMessage function with the text
+                    if (messageController.text.isNotEmpty) {
+                      final text = messageController
+                          .text; // Get the text from the TextField
+                      createMessage(
+                          text); // Call createMessage function with the text
                       messageController.clear();
                       fetchMessages();
                     }
-                    
                   },
                 ),
               ],

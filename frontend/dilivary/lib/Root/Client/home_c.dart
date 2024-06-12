@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../CommandScreen.dart';
+import '../../Models/User.dart';
+import '../screens/SeeCommandAviable.dart';
 import '../screens/notification.dart';
 
 
@@ -16,6 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
     {"name": "Jane Smith", "status": "Offline"},
     // Add more delivery persons as needed
   ];
+
+
+  int? id = DataId().data; 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +64,38 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                         icon: Icon(Icons.add),
+                        label: Text("Add Command"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+               Card(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "So you want to post a command?",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      // Add Command Button
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Navigate to Command Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SeeCommandYourCommandC(idClient: id,)),
+                          );
+                        },
+                        icon: Icon(Icons.remove_red_eye),
                         label: Text("Add Command"),
                       ),
                     ],

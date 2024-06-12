@@ -39,7 +39,7 @@ class _CommandScreenState extends State<CommandScreen> {
           'size': _selectedSize,
           'idclient':user!.id,
           'weight': int.parse(weightController.text),
-          'description': descriptionController.text,
+          'desqreption': descriptionController.text,
         }),
       );
 

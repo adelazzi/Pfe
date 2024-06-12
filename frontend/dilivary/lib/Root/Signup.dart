@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:dilivary/Root/Login.dart';
 import 'package:dilivary/Root/Signup02.dart';
+import '../Models/User.dart';
 import 'Client/homa_page.dart';
+import 'Driver/HomeD.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -18,7 +20,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   bool isDeliveryPerson = false;
-
+  User? mainUser;
   // Create TextEditingControllers for the form fields
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -28,6 +30,39 @@ class _SignupPageState extends State<SignupPage> {
   final _confirmPasswordController = TextEditingController();
   final _idlicenseController = TextEditingController();
   final _idnumberController = TextEditingController();
+
+  Future<void> _login(enteredEmail, enteredPassword) async {
+    if (enteredEmail.isEmpty || enteredPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter both email and password')),
+      );
+      return;
+    }
+
+    final mainUser = await User.login(enteredEmail, enteredPassword);
+
+    if (mainUser != null) {
+      await mainUser.saveToPreferences();
+      DataPassword().data = enteredPassword;
+      print(
+          'Login successful: ${mainUser.token}, ${mainUser.userType}, ${mainUser.id}, ${mainUser.phone_number}, ${mainUser.id_driving_license}');
+      if (mainUser.userType == 'Client') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage_C()),
+        );
+      }
+      if (mainUser.userType == 'Driver') {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeDeliveryPage()),
+        );
+      }
+    } else {
+      print('Login failed');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed, please check your credentials')),
+      );
+    }
+  }
 
   Future<void> signup() async {
     // Validate the form
@@ -40,7 +75,8 @@ class _SignupPageState extends State<SignupPage> {
           'phone_number': _phoneNumberController.text,
           'age': _ageController.text,
           'password': _passwordController.text,
-          'id_driving_license': isDeliveryPerson ? int.tryParse(_idlicenseController.text) : null,
+          'id_driving_license':
+              isDeliveryPerson ? int.tryParse(_idlicenseController.text) : null,
           'id_number': _idnumberController.text,
           'user_type': isDeliveryPerson ? 'Driver' : 'Client',
         };
@@ -57,6 +93,8 @@ class _SignupPageState extends State<SignupPage> {
 
         // Handle the response
         if (response.statusCode == 201) {
+          _login(_emailController.text, _passwordController.text);
+          DataPassword().data = _passwordController.text;
           if (isDeliveryPerson) {
             Navigator.push(
               context,
@@ -330,18 +368,22 @@ Widget inputFile({
                 return 'Age must be between 18 and 70';
               }
             } else if (label == 'Password') {
-              if (value == null ||
-                  value.isEmpty ||
-                  value.length < 8 ) {
+              if (value == null || value.isEmpty || value.length < 8) {
                 return 'Password must be at least 8 characters long ';
               }
             } else if (label == 'Confirm Password') {
               if (value != controller.text) {
                 return 'Passwords do not match';
               }
-            } else if (label == 'ID') {
+            } else if (label == 'Id number') {
               if (value == null ||
                   value.isEmpty ||
+                  value.length != 9 ||
+                  int.tryParse(value) == null) {
+                return 'ID must be 9 digits';
+              }
+            } else if (label == 'ID License') {
+              if (value!.isEmpty ||
                   value.length != 9 ||
                   int.tryParse(value) == null) {
                 return 'ID must be 9 digits';

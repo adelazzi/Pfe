@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
     ]    
     
     
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True,blank=True, null=True)
     age = models.PositiveIntegerField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, unique=True, blank=True, null=True)
     id_number = models.CharField(max_length=9, unique=True, blank=True, null=True)
