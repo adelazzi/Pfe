@@ -1,9 +1,12 @@
 # Delivery Application (Improve delivery process)Delivery Application (Improve delivery process)
 ## on USTHB <img src="https://github.com/adelazzi/adelazzi/assets/93773381/4704f2a7-8b89-4342-8442-b3b18fe7b040" alt="Logo,_USTHB" width="40" height="40"/>
-In this project, a method was built and created to improve the delivery
-efficiency using advanced algorithms aimed at finding the shortest route.
-An application was created for all operating systems that performs 
-all the tasks of delivery companies, between Administrator, Drivers and Customers.
+
+
+Final Year Project:
+
+In this project, we developed a method to improve delivery efficiency using advanced algorithms designed to find the shortest route. An application was created for all operating systems that performs all the tasks of delivery companies, catering to Administrators, Drivers, and Customers.
+
+
 
 # Development tool 
 ## Frontend 
@@ -22,6 +25,9 @@ all the tasks of delivery companies, between Administrator, Drivers and Customer
   <li><img src="https://github.com/adelazzi/Pfe/assets/93773381/8c5c749d-9482-44bd-a877-0692f2c56b0c" alt="django-svgrepo-com" width="40" height="40"/>Django</li>
 <li><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/>  python </li>
 </ul>
+
+
+
 
 
 
