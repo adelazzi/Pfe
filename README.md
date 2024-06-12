@@ -9,7 +9,7 @@ all the tasks of delivery companies, between Administrator, Drivers and Customer
 ## Frontend 
 
 <ul>
-  <li><li><img src="https://github.com/adelazzi/adelazzi/assets/93773381/1a6c5fbe-f284-4856-883f-92d667543c29" alt="flutter-svgrepo-com" width="40" height="40"/>Flutter</li></li>
+  <li><img src="https://github.com/adelazzi/adelazzi/assets/93773381/1a6c5fbe-f284-4856-883f-92d667543c29" alt="flutter-svgrepo-com" width="40" height="40"/>Flutter</li>
   <li><img src="https://github.com/adelazzi/adelazzi/assets/93773381/a282d003-f570-4d14-883d-f742626965a0" alt="dart-svgrepo-com" width="40" height="40"/>Dart</li>
   <li><img src="https://github.com/adelazzi/adelazzi/assets/93773381/79227ff2-757a-4610-b605-446b785e9cb6" alt="html-5-svgrepo-com" width="40" height="40"/>Html</li>
   <li><img src="https://github.com/adelazzi/adelazzi/assets/93773381/1275612e-4b36-4f50-afb2-578bfbc723a5" alt="css-3-svgrepo-com" width="40" height="40"/>Css</li>
