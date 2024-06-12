@@ -2,7 +2,7 @@
 ## on USTHB <img src="https://github.com/adelazzi/adelazzi/assets/93773381/4704f2a7-8b89-4342-8442-b3b18fe7b040" alt="Logo,_USTHB" width="40" height="40"/>
 
 
-Final Year Project:
+My Final Year Project:
 
 In this project, we developed a method to improve delivery efficiency using advanced algorithms designed to find the shortest route. An application was created for all operating systems that performs all the tasks of delivery companies, catering to Administrators, Drivers, and Customers.
 
@@ -26,6 +26,8 @@ In this project, we developed a method to improve delivery efficiency using adva
 <li><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/>  python </li>
 </ul>
 
+
+other detailes on [Mémoire PFE 2023_2024.pdf](https://github.com/user-attachments/files/15803924/Memoire.PFE.2023_2024.pdf)
 
 
 
