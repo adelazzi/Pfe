@@ -16,7 +16,7 @@ Js
 
 
 <ul>
-<li><img src="![django-svgrepo-com](https://github.com/adelazzi/Pfe/assets/93773381/8c5c749d-9482-44bd-a877-0692f2c56b0c)" alt="python" width="40" height="40"/>Django</li>
+<li><img src="![django-svgrepo-com](https://github.com/adelazzi/Pfe/assets/93773381/8c5c749d-9482-44bd-a877-0692f2c56b0c)"  width="40" height="40"/>Django</li>
 <li><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/>  python </li>
 </ul>
 
