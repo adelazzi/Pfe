@@ -1,8 +1,9 @@
+// ignore_for_file: file_names, prefer_const_constructors_in_immutables, library_private_types_in_public_api, prefer_const_constructors, prefer_interpolation_to_compose_strings
+
 import 'package:flutter/material.dart';
 
 import '../../Models/User.dart';
 import '../screens/SeeCommandAviable.dart';
-import '../screens/notification.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);

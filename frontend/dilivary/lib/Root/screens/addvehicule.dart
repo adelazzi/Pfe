@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, unused_field, unused_local_variable, non_constant_identifier_names
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io'; // For File class
@@ -76,7 +78,7 @@ class _SignupVState extends State<AddVehicleInfoScreen> {
           builder: (context) {
             return AlertDialog(
               title: Text('Error'),
-              content: Text(errorResponse ?? 'An error occurred'),
+              content: Text(errorResponse),
               actions: [
                 TextButton(
                   onPressed: () {

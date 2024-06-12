@@ -1,6 +1,7 @@
+// ignore_for_file: camel_case_types, library_private_types_in_public_api, use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../../Models/User.dart';
 import '../Login.dart';
 import '../screens/message.dart';
@@ -80,7 +81,7 @@ class _HomePage_CState extends State<HomePage_C> {
                     ),
                     if (user != null)
                       Text(
-                        user!.username ?? 'No username',
+                        user!.username,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,

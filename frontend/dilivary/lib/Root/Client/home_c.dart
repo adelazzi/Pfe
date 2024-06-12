@@ -1,9 +1,10 @@
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 import '../../CommandScreen.dart';
 import '../../Models/User.dart';
 import '../screens/SeeCommandAviable.dart';
-import '../screens/notification.dart';
 
 
 class HomeScreen extends StatefulWidget {

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, file_names
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, file_names, library_private_types_in_public_api, use_build_context_synchronously, prefer_const_literals_to_create_immutables, avoid_print
 
 import 'dart:async';
 import 'dart:convert';
@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 import 'Models/User.dart';
-import 'Root/Login.dart';
 import 'Root/screens/SeeCommandAviable.dart';
 
 class HomeAdminPage extends StatefulWidget {
@@ -46,7 +45,6 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text("Administration"),

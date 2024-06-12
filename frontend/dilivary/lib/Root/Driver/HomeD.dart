@@ -1,10 +1,9 @@
-// ignore_for_file: unused_element, must_be_immutable
+// ignore_for_file: unused_element, must_be_immutable, file_names, library_private_types_in_public_api, prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart'; // Import InAppWebView
+// Import InAppWebView
 
-import 'package:geolocator/geolocator.dart';
 
 import '../../Models/User.dart';
 import '../Login.dart';

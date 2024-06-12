@@ -1,12 +1,8 @@
+// ignore_for_file: file_names, prefer_const_constructors_in_immutables, prefer_const_constructors, avoid_print, use_build_context_synchronously, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
-import 'package:dilivary/main.dart';
-import 'package:dilivary/Root/Signup.dart';
 import 'package:dilivary/Root/Client/homa_page.dart';
 import 'package:dilivary/Home_Admin.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../Models/User.dart';
 import '../tools/socialmedia.dart';
 import '../tools/underline.dart';
