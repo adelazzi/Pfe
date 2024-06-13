@@ -1,4 +1,4 @@
-# Delivery Application (Improve delivery process)Delivery Application (Improve delivery process)
+# Delivery Application (Improve delivery process)
 ## on USTHB <img src="https://github.com/adelazzi/adelazzi/assets/93773381/4704f2a7-8b89-4342-8442-b3b18fe7b040" alt="Logo,_USTHB" width="40" height="40"/>
 
 
